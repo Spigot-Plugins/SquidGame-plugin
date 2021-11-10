@@ -1,0 +1,6 @@
+name: ${project.artifactId}
+main: com.github.unldenis.SquidGame
+version: ${project.version}
+api-version: 1.13
+commands:
+  squidgame:
