@@ -15,6 +15,11 @@
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
+
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
 
 
@@ -31,6 +36,11 @@
             <artifactId>lombok</artifactId>
             <version>1.18.22</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.unldenis</groupId>
+            <artifactId>UnldenisHelper</artifactId>
+            <version>master-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
