@@ -12,6 +12,8 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 
@@ -30,7 +32,7 @@ public class HoneycombGame extends Game {
      * @param mainGame    maingame of this game
      */
     public HoneycombGame(@NonNull MainGame mainGame) {
-        super(mainGame, "Honeycomb", "L'obbiettivo è ricreare le figure");
+        super(mainGame, mainGame.getPlugin().getMessages().getString("Honeycomb.name"), mainGame.getPlugin().getMessages().getString("Honeycomb.description"));
         shapes.add( new Shape("Circle", Material.GREEN_WOOL));
         shapes.add(new Shape("Triangle", Material.RED_WOOL));
         shapes.add(new Shape("Star", Material.YELLOW_WOOL));
@@ -59,8 +61,11 @@ public class HoneycombGame extends Game {
             gP.teleport(mainGame.getLobbyLoc());
             gP.getProperties().remove("shape");
         }
+
         reset();
-        mainGame.nextGame();
+        if(mainGame.getPlayers().size()!=1) //check if game is not already ended
+            mainGame.nextGame();
+
     }
 
     /**
@@ -78,9 +83,20 @@ public class HoneycombGame extends Game {
             gP.getPlayer().setGameMode(GameMode.SURVIVAL);
         }
 
-        //chek eventually shape without player
-        for(Shape shape: shapes)
-            if(shape.getGamePlayers().size()==0) shape.setRight(true);
+        for(Shape shape: shapes) {
+            //chek eventually shape without player
+            int size = shape.getGamePlayers().size();
+            if (size == 0) {
+                shape.setRight(true);
+                continue;
+            }
+            //add team material to game player
+            size = (int) Math.pow(shape.getStructure().length, 2);
+            ItemStack item = new ItemStack(shape.getMaterial(), size);
+            for(GamePlayer gP : shape.getGamePlayers())
+                gP.getPlayer().getInventory().addItem(item);
+        }
+
     }
 
 

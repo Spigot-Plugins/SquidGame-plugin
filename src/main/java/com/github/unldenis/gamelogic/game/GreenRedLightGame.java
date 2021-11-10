@@ -35,7 +35,7 @@ public class GreenRedLightGame extends Game {
      * @param mainGame    maingame of this game
      */
     public GreenRedLightGame(@NonNull MainGame mainGame) {
-        super(mainGame, "GreenRedLight", "L'obbiettivo è arrivare in fondo");
+        super(mainGame, mainGame.getPlugin().getMessages().getString("GreenRedLight.name"), mainGame.getPlugin().getMessages().getString("GreenRedLight.description"));
     }
 
 
@@ -86,7 +86,7 @@ public class GreenRedLightGame extends Game {
         }
         meta.addEffect(effect1.build());
         firework.setFireworkMeta(meta);
-        firework.setPassenger((Entity)player);
+        firework.setPassenger(player);
 
         //eliminate
         mainGame.eliminate(player);
@@ -192,14 +192,10 @@ public class GreenRedLightGame extends Game {
                     endTime();
                     return;
                 }
-                if(temp==8) {
-                    checkPlayers = false;
-                    setInventory(false);
+                if(temp==4) {
+                    checkPlayers = !checkPlayers && Math.random() < 0.5;
+                    setInventory(checkPlayers);
                     temp = 0;
-                }
-                else if (temp==4) {
-                    checkPlayers = true;
-                    setInventory(true);
                 }
                 mainGame.sendActionBar("&7"+secs);
                 temp++;

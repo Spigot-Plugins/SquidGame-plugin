@@ -1,19 +1,27 @@
 package com.github.unldenis;
 
 import com.github.unldenis.command.MainCommand;
+import com.github.unldenis.data.DataManager;
 import com.github.unldenis.helper.gui.Menu;
 import com.github.unldenis.listener.GameEvents;
 import com.github.unldenis.listener.GreenRedLightEvents;
 import com.github.unldenis.listener.HoneycombEvents;
 import com.github.unldenis.manager.GameManager;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class SquidGame extends JavaPlugin {
 
+    private DataManager messages;
     private GameManager gameManager;
 
     @Override
     public void onEnable() {
+        /**
+         * Loading messages
+         */
+        messages = new DataManager(this, "messages.yml");
+
         /**
          * Loading gameManager
          */
@@ -40,5 +48,13 @@ public class SquidGame extends JavaPlugin {
      */
     public GameManager getGameManager() {
         return gameManager;
+    }
+
+    /**
+     * Getter of messages yml
+     * @return messages of plugin
+     */
+    public FileConfiguration getMessages() {
+        return messages.getConfig();
     }
 }

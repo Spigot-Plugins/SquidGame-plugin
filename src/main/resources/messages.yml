@@ -1,0 +1,6 @@
+Honeycomb:
+  name: 'Honeycomb'
+  description: '&aThe goal is to make your shape'
+GreenRedLight:
+  name: 'GreenRedLight'
+  description: '&eThe goal is to reach the end'

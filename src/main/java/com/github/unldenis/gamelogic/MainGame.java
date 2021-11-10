@@ -2,6 +2,7 @@ package com.github.unldenis.gamelogic;
 
 import com.github.unldenis.SquidGame;
 import com.github.unldenis.data.DataManager;
+import com.github.unldenis.gamelogic.game.HoneycombGame;
 import com.github.unldenis.helper.util.ReflectionUtil;
 import lombok.Getter;
 import lombok.NonNull;
@@ -180,7 +181,7 @@ public class MainGame {
      * Method that eliminates a player from the game
      * @param player player to eliminate
      */
-    public void eliminate(Player player) {
+    public void eliminate(Player player ) {
         eliminate(find(player));
     }
 
@@ -198,7 +199,7 @@ public class MainGame {
         spectators.add(gamePlayer);
 
         if(players.size()==1) {
-            if(!getCurrentGame().getName().equals("Honeycomb")) getCurrentGame().reset();
+            if(!(getCurrentGame() instanceof HoneycombGame)) getCurrentGame().reset();
             new BukkitRunnable() {
                 @Override
                 public void run() {
