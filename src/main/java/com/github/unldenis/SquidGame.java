@@ -1,5 +1,6 @@
 package com.github.unldenis;
 
+import com.github.unldenis.api.SquidGameApi;
 import com.github.unldenis.command.MainCommand;
 import com.github.unldenis.data.DataManager;
 import com.github.unldenis.helper.gui.Menu;
@@ -10,8 +11,12 @@ import com.github.unldenis.manager.GameManager;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.HashSet;
+import java.util.function.Consumer;
+
 public class SquidGame extends JavaPlugin {
 
+    private HashSet<SquidGameApi> apiCalls = new HashSet<>();
     private DataManager messages;
     private GameManager gameManager;
 
@@ -43,6 +48,23 @@ public class SquidGame extends JavaPlugin {
     }
 
     /**
+     * Method to use to register your SquidGameApi implementation
+     * @param apiImplementation your class implementing SquidGameApi
+     */
+    public void register(SquidGameApi apiImplementation) {
+        apiCalls.add(apiImplementation);
+    }
+
+    /**
+     * Method used to call the API
+     * @param consumer to apply to all registered classes
+     */
+    public void execute(Consumer<SquidGameApi> consumer) {
+        for(SquidGameApi api: apiCalls)
+            consumer.accept(api);
+    }
+
+    /**
      * Getter of gameManager
      * @return manager of games
      */
@@ -57,4 +79,7 @@ public class SquidGame extends JavaPlugin {
     public FileConfiguration getMessages() {
         return messages.getConfig();
     }
+
+
+
 }

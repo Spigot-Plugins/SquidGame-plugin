@@ -22,6 +22,7 @@ import java.util.Optional;
 
 /**
  * Class representing a match
+ * You can see this class as the organizer / manager of multiple games.
  * @author unldenis
  */
 public class MainGame {
@@ -75,11 +76,13 @@ public class MainGame {
         gamePlayer.teleport(lobbyLoc);
         players.add(gamePlayer);
 
-
         for(int j=0; j<100; j++)
             player.sendMessage("");
-
         sendMessage("&a"+player.getName()+" &7joined in SquidGame (&a"+players.size()+"&7/"+maxPlayers+")");
+
+        //add api reference
+        plugin.execute(api -> api.onPlayerJoin(player, this));
+
         if(gameStatus.equals(GameStatus.WAITING) && players.size()==minPlayers)  {
             gameStatus = GameStatus.STARTING;
             sendTitle("&7First game is...", "");
@@ -121,11 +124,28 @@ public class MainGame {
         gamePlayer.teleport(lobbyLoc);
         gamePlayer.rollback();
 
+        //add api reference
+        plugin.execute(api -> api.onPlayerQuit(player, this));
 
-        if(players.size()==1)
-            endGame();
-        else
-            getCurrentGame().onQuit(gamePlayer);//added for eventually minigame settings
+
+        //check if game is starting
+        if(currentTask!=null && !currentTask.isCancelled() && gameStatus.equals(GameStatus.STARTING) &&  players.size()< minPlayers) {
+            currentTask.cancel();
+            setGameStatus(GameStatus.WAITING);
+            sendActionBar("&cGame starting stopped");
+            return;
+        }
+
+        //game already started
+        if(gameStatus.equals(GameStatus.PLAYING)) {
+            if(players.size()==1)
+                endGame();
+            else
+                getCurrentGame().onQuit(gamePlayer);//added for eventually minigame settings
+
+        }
+
+
 
     }
 
@@ -197,6 +217,11 @@ public class MainGame {
 
         //set to spectator
         spectators.add(gamePlayer);
+
+
+        //add api reference
+        plugin.execute(api -> api.onPlayerEliminated(gamePlayer.getPlayer(), this));
+
 
         if(players.size()==1) {
             if(!(getCurrentGame() instanceof HoneycombGame)) getCurrentGame().reset();
@@ -360,7 +385,7 @@ public class MainGame {
      * Method that teleports all players
      * @param loc location where to teleport
      */
-    public void teleport(@NonNull Location loc) {
+    private void teleport(@NonNull Location loc) {
         for (GamePlayer gamePlayer : players)
             gamePlayer.teleport(loc);
     }
@@ -368,7 +393,7 @@ public class MainGame {
     /**
      * Reset to default the maingame
      */
-    public void reset() {
+    private void reset() {
         round = 0;
         players.clear();
         gameStatus = GameStatus.WAITING;
