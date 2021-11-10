@@ -13,7 +13,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 
@@ -176,24 +175,21 @@ public class HoneycombGame extends Game {
      */
     @Override
     public void onQuit(GamePlayer gamePlayer) {
-        if(mainGame.getGameStatus().equals(GameStatus.PLAYING)) {
-            Shape shape = findShape((String) gamePlayer.getProperties().get("shape"));
-            shape.getGamePlayers().remove(gamePlayer);
+        Shape shape = findShape((String) gamePlayer.getProperties().get("shape"));
+        shape.getGamePlayers().remove(gamePlayer);
 
-            if(shape.getGamePlayers().size()==0){
-                shape.setRight(true);
-                ArrayList<Shape> last = new ArrayList<>();
-                for(Shape s: shapes)
-                    if(!s.isRight()) last.add(s);
+        if(shape.getGamePlayers().size()==0){
+            shape.setRight(true);
+            ArrayList<Shape> last = new ArrayList<>();
+            for(Shape s: shapes)
+                if(!s.isRight()) last.add(s);
 
-                mainGame.sendMessage("&c" + shape.getName()+" &7team left! &c"+(last.size())+" &7remaining teams");
+            mainGame.sendMessage("&c" + shape.getName()+" &7team left! &c"+(last.size())+" &7remaining teams");
 
-                //end game
-                if(last.size()==1)
-                    endGame(shape);
-            }
+            //end game
+            if(last.size()==1)
+                endGame(shape);
         }
-
 
     }
 
