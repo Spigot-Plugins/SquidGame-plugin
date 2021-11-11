@@ -20,8 +20,9 @@ import java.util.Optional;
  * @see <a href="https://github.com/unldenis/UnldenisHelper">https://github.com/unldenis/UnldenisHelper</a>
  */
 public final class MainCommand  {
-    private final SquidGame plugin;
+    private static final String ADMIN_PERM = "squidgame.admin";
 
+    private final SquidGame plugin;
     public MainCommand(SquidGame plugin) {
         this.plugin = plugin;
         register();
@@ -36,7 +37,8 @@ public final class MainCommand  {
             Player player = (Player) sender;
             if (args.length > 0) {
                 if (args[0].equalsIgnoreCase("help") && args.length == 1) {
-                    sendMessage(player, """
+                    if(player.hasPermission(ADMIN_PERM)) {
+                        sendMessage(player, """
                         &4Admin help
                         &7/squidgame create <maingame>
                         &7/squidgame edit <maingame> 
@@ -45,8 +47,16 @@ public final class MainCommand  {
                         &7/squidgame join <maingame>               
                         &7/squidgame quit              
                         """);
+                    }else{
+                        sendMessage(player, """
+                        &4SquidGame help
+                        &7/squidgame join <maingame>               
+                        &7/squidgame quit              
+                        """);
+                    }
                     return;
                 } else if (args[0].equalsIgnoreCase("create") && args.length == 2) {
+                    if(!player.hasPermission(ADMIN_PERM)) return;
                     Optional<MainGame> game = plugin.getGameManager().find(args[1]);
                     if (game.isPresent()) {
                         sendMessage(player, "&cThis game already exist");
@@ -58,6 +68,7 @@ public final class MainCommand  {
                     sendMessage(player, "&7Game &a" + mainGame.getName() + " &7created");
                     return;
                 } else if (args[0].equalsIgnoreCase("edit") && args.length == 2) {
+                    if(!player.hasPermission(ADMIN_PERM)) return;
                     Optional<MainGame> game = plugin.getGameManager().find(args[1]);
                     if (game.isEmpty()) {
                         sendMessage(player, "&cThis game doesn't exist");
@@ -66,6 +77,7 @@ public final class MainCommand  {
                     new MainGameViewer(player, game.get()).open();
                     return;
                 } else if (args[0].equalsIgnoreCase("addgame") && args.length == 3) {
+                    if(!player.hasPermission(ADMIN_PERM)) return;
                     Optional<MainGame> optionalMainGame = plugin.getGameManager().find(args[1]);
                     if (optionalMainGame.isEmpty()) {
                         sendMessage(player, "&cThis game doesn't exist");
@@ -98,6 +110,7 @@ public final class MainCommand  {
                     game.get().join(player);
                     return;
                 } else if (args[0].equalsIgnoreCase("save") && args.length == 2) {
+                    if(!player.hasPermission(ADMIN_PERM)) return;
                     Optional<MainGame> game = plugin.getGameManager().find(args[1]);
                     if (game.isEmpty()) {
                         sendMessage(player, "&cThis game doesn't exist");
